@@ -1,0 +1,48 @@
+#   Sergio Alberto Salguero Luna
+#   Proyecto Final (Primera Parte)
+
+from objeto_seguro import ObjetoSeguro
+import binascii
+
+if __name__ == '__main__':
+    print("**************************************************")
+    print("Creación de objetos y generación e intercambio de llaves ")
+    alice = ObjetoSeguro('Alicia')
+    bob = ObjetoSeguro('Beto')
+    # Intercambio de llaves públicas
+    bob.pub_key_destinatario = alice.llave_publica()
+    alice.pub_key_destinatario = bob.llave_publica()
+    print("**************************************************")
+    print("Saludo")
+    print("**************************************************")
+    msj_saludo = "Hola Beto! Soy Alicia. "
+    print("Saludo:", msj_saludo)
+    cifrado = alice.cifrar_msj(alice.pub_key_destinatario, msj_saludo)
+    print("Saludo cifrado de Alicia:")
+    alice.saludar(binascii.hexlify(cifrado))
+    alice.almacenar_msj(msj_saludo)
+    print("**************************************************")
+    print("Descifrar saludo")
+    print("**************************************************")
+    descifrado = bob.descifrar_msj(cifrado)
+    print("Saludo descifrado:", descifrado)
+    decodificado = bob.decodificar64(descifrado)
+    print("Saludo decodificado:", decodificado)
+    print("**************************************************")
+    print("Responder saludo")
+    print("**************************************************")
+    print("Respuesta de Bob:")
+    cifrado_resp = bob.responder(decodificado)
+    print("Respuesta cifrada:", binascii.hexlify(cifrado_resp))
+    alice.esperar_respuesta(cifrado_resp)
+    print("**************************************************")
+    print("Descifrar respuesta")
+    print("**************************************************")
+    descifrado_resp = alice.descifrar_msj(cifrado_resp)
+    print("Respuesta descifrada:", descifrado_resp)
+    decodificado_resp = alice.decodificar64(descifrado_resp)
+    print("Respuesta decodificada:", decodificado_resp)
+    print("**************************************************")
+    print("Consulta de registro")
+    print("**************************************************")
+    print(alice.consultar_msj(alice.id))
